@@ -82,7 +82,7 @@ const Mutations = {
       throw new Error("Invalid Password!");
     }
     // 3. generate the JWT Token
-    const token = jwt.sign({ userId: user.Id }, process.env.APP_SECRET);
+    const token = jwt.sign({ userId: user.id }, process.env.APP_SECRET);
     // 4. Set the cookie with the token
     ctx.response.cookie("token", token, {
       httpOnly: true,
