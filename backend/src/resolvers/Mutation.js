@@ -26,8 +26,6 @@ const Mutations = {
       info
     );
 
-    console.log(item);
-
     return item;
   },
   updateItem(parent, args, ctx, info) {
@@ -90,7 +88,6 @@ const Mutations = {
   async signin(parent, { email, password }, ctx, info) {
     // 1. check if there is a user with that email
     const user = await ctx.db.query.user({ where: { email } });
-    console.log(user);
     if (!user) {
       throw new Error(`No such user found for email ${email}`);
     }
@@ -221,6 +218,47 @@ const Mutations = {
       },
       info
     );
+  },
+  async addToCart(parent, args, ctx, info) {
+    // 1. Make sure they are signed in
+    const userId = ctx.request.userId;
+    if (!userId) {
+      throw new Error("You must be signed in");
+    }
+    // 2. Query the users current cart
+    const [existingCartItem] = await ctx.db.query.cartItems({
+      where: {
+        user: { id: userId },
+        item: { id: args.id }
+      }
+    });
+    // 3. Check if that item is already in their cart
+    if (existingCartItem) {
+      console.log("This item is already in their cart");
+      return ctx.db.mutation.updateCartItem(
+        {
+          where: { id: existingCartItem.id },
+          data: { quantity: existingCartItem.quantity + 1 }
+        },
+        info
+      );
+    }
+    // increment by 1 if it is
+    // 4. If its not, create a fresh CartItem for that user!
+    return ctx.db.mutation.createCartItem(
+      {
+        data: {
+          user: {
+            connect: { id: userId }
+          },
+          item: {
+            connect: { id: args.id }
+          }
+        }
+      },
+      info
+    );
   }
 };
+
 module.exports = Mutations;
