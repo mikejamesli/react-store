@@ -1,5 +1,5 @@
 # source: https://eu1.prisma.sh/mike-james-li-692d82/sick-fits/dev
-# timestamp: Sun May 05 2019 00:36:48 GMT+0100 (GMT Summer Time)
+# timestamp: Sun May 05 2019 08:55:05 GMT+0100 (GMT Summer Time)
 
 type AggregateCartItem {
   count: Int!
@@ -20,7 +20,7 @@ type BatchPayload {
 
 type CartItem implements Node {
   id: ID!
-  quantity: Int
+  quantity: Int!
   item: Item!
   user: User!
 }
@@ -71,7 +71,7 @@ enum CartItemOrderByInput {
 
 type CartItemPreviousValues {
   id: ID!
-  quantity: Int
+  quantity: Int!
 }
 
 input CartItemScalarWhereInput {
